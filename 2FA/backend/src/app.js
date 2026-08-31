@@ -1,12 +1,15 @@
 import express from "express"
 import cookieParser from "cookie-parser"
 import dbConfig from "./config/db.config.js"
+import authRoutes from "./routes/auth.routes.js"
+
 const app = express()
 
 app.use(express.json())
 app.use(cookieParser())
 dbConfig()
 
+app.use("/api/auth", authRoutes)
 
 app.get("/", (req, res) => {
     res.send("Server is running !")
