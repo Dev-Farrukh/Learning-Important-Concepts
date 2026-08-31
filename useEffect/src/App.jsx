@@ -11,7 +11,7 @@ function App() {
   const passwordGenerator = useCallback(() => {
     let str = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
     if (isNumber) str += "1234567890"
-    if (isChar) str += "~!@##$%^&*_+_!"
+    if (isChar) str += "~!@##$%^&*_+_!@***`^^"
     let randomChar = ""
 
     for (let i = 1; i <= length; i++) {
