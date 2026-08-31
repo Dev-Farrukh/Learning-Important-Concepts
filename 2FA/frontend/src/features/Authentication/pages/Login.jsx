@@ -38,7 +38,7 @@ const Login = () => {
 
                 <Form.Item>
                     <Button block type="primary" htmlType="submit">
-                        Log in
+                        Button
                     </Button>
                     <div className="mt-3 text-center text-sm text-zinc-400">
                         or <a href="" className="text-blue-400 hover:text-blue-300 transition-colors">Register now!</a>
