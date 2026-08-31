@@ -19,13 +19,13 @@ const Login = () => {
                     name="username"
                     rules={[{ required: true, message: 'Please input your Username!' }]}
                 >
-                    <Input prefix={<UserOutlined />} placeholder="Username" />
+                    <Input prefix={<UserOutlined style={{ marginRight: '10px' }} />} className="h-12" placeholder="Username" />
                 </Form.Item>
                 <Form.Item
                     name="password"
                     rules={[{ required: true, message: 'Please input your Password!' }]}
                 >
-                    <Input prefix={<LockOutlined />} type="password" placeholder="Password" />
+                    <Input prefix={<LockOutlined style={{ marginRight: '10px' }}/>} type="password" className="h-12  " placeholder="Password" />
                 </Form.Item>
                 <Form.Item>
                     <Flex justify="space-between" align="center">
