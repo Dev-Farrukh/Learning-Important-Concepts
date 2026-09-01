@@ -1,11 +1,11 @@
 /* eslint-disable no-undef */
 import "dotenv/config"
 
-const NAMES = ["PORT" , "MONGO_URI"]
+const NAMES = ["PORT" , "MONGO_URI" , "TOKEN_SECRET"]
 
 NAMES.forEach((items)=> {
     if(!process.env[items]){
-        throw new Error(`Variable ${items } is missing `)
+        throw new Error(`Variable ${items} is missing `)
     }
 
 })
