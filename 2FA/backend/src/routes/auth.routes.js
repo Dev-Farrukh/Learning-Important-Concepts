@@ -1,7 +1,19 @@
 import express from "express";
-import { registerUser } from "../controller/auth.controller.js";
+import * as authController from "../controller/auth.controller.js";
+import {body} from "express-validator";
+import tokenValid from "../middleware/tokenCheck.js";
 const router = express.Router();
 
-router.post("/register", registerUser)
+router.post("/register",[
+    body("firstName").trim().notEmpty().isLength({min : 2 , max : 10}).withMessage("First name is invalid"),
+    body("lastName").trim().notEmpty().isLength({min : 2 , max : 10}).withMessage("Last name is invalid"),
+    body("userName").trim().notEmpty().isLength({min : 3 , max : 10}).withMessage("User name is invalid"),
+    body("password").trim().notEmpty().withMessage("Password is invalid"),
+] , authController.registerUser)
+
+router.post("/login",[
+    body("userName").trim().notEmpty().isLength({min : 3 , max : 10}).withMessage("User name is invalid"),
+    body("password").trim().notEmpty().withMessage("Password is invalid"),
+] , tokenValid, authController.loginUser)
 
 export default router
