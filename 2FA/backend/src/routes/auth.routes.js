@@ -14,6 +14,11 @@ router.post("/register",[
 router.post("/login",[
     body("userName").trim().notEmpty().isLength({min : 3 , max : 10}).withMessage("User name is invalid"),
     body("password").trim().notEmpty().withMessage("Password is invalid"),
-] , tokenValid, authController.loginUser)
+] , authController.loginUser)
+
+router.get("/logout" , tokenValid , authController.logout)
+
+router.get("/get-user" , tokenValid , authController.getMe)
+
 
 export default router

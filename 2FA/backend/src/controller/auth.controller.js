@@ -71,3 +71,23 @@ export const loginUser = async (req , res) => {
     
 
 }
+
+export const logout = async (req , res) => {
+ res.clearCookie("token" , {
+    httpOnly : true ,
+    secure : true ,
+    sameSite : "none",
+ })   
+ return res.status(200).json({ message: "Logged out successfully" });
+}
+
+export const getMe = async (req , res) => {
+    try {
+        res.status(200).json({
+            message : "User fetched successfully",
+            user : req.user
+        })
+    } catch (error) {
+        return res.status(400).json({error : error.message});   
+    }
+}
