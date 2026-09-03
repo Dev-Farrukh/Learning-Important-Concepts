@@ -1,15 +1,25 @@
 import { LockOutlined, UserOutlined, } from '@ant-design/icons';
-import { Button, Form, Input } from 'antd';
+import { Button, Form, Input, notification } from 'antd';
+import { registerUser } from '../api/auth.api';
 
 const Register = () => {
+    const [api , contextHolder] = notification.useNotification();
 
-    const onFinish = values => {
-        console.log('Received values of form: ', values);
+    const onFinish = async (values) => {
+        try {
+            await registerUser(values)
+        } catch (error) {
+            console.log("ff",error);
+            api.error({
+                    title: 'Something went wrong',
+                    description : error.message
+            });
+        }
     };
     return (
         <div className='flex h-dvh justify-center items-center flex-col gap-6 '>
             <h2 className='text-3xl'>Register</h2>
-
+            {contextHolder}
             <Form
                 name="login"
                 initialValues={{ remember: true }}
