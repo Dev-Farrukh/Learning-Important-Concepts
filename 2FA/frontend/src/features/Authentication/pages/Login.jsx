@@ -1,10 +1,29 @@
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
-import { Button, Checkbox, Flex, Form, Input } from 'antd';
+import { App, Button, Checkbox, Flex, Form, Input, notification } from 'antd';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { loginUser } from '../api/auth.api';
 const Login = () => {
+      const { notification } = App.useApp();
+    const navigate = useNavigate()
+    const [loading, setLoading] = useState(false)
 
-    
-    const onFinish = values => {
+    const onFinish = async values => {
         console.log('Received values of form: ', values);
+        setLoading(true)
+        try {
+            const response = await loginUser(values)
+            notification.success({ title: `Hello ${response?.user?.firstName || "user"}` }) 
+            navigate("/")
+        } catch (error) {
+            const errorMsg = typeof error === 'string' ? error : error?.response?.data?.message || error?.message || 'Try agin later';
+            notification.error({
+                title: 'Something went wrong',
+                description: errorMsg
+            });
+        } finally {
+            setLoading(false)
+        }
     };
     return (
         <div className='flex h-dvh justify-center items-center flex-col gap-6 '>
@@ -25,7 +44,7 @@ const Login = () => {
                     name="password"
                     rules={[{ required: true, message: 'Please input your Password!' }]}
                 >
-                    <Input prefix={<LockOutlined style={{ marginRight: '10px' }}/>} type="password" className="h-12  " placeholder="Password" />
+                    <Input prefix={<LockOutlined style={{ marginRight: '10px' }} />} type="password" className="h-12  " placeholder="Password" />
                 </Form.Item>
                 <Form.Item>
                     <Flex justify="space-between" align="center">
@@ -37,7 +56,7 @@ const Login = () => {
                 </Form.Item>
 
                 <Form.Item>
-                    <Button block type="primary" htmlType="submit">
+                    <Button block type="primary" htmlType="submit" loading={loading}>
                         Button
                     </Button>
                     <div className="mt-3 text-center text-sm text-zinc-400">

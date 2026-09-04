@@ -1,4 +1,4 @@
-import { ConfigProvider, theme } from "antd";
+import { ConfigProvider, theme , App as AntdApp } from "antd";
 import Router from "./Router";
 
 const App = () => {
@@ -8,9 +8,11 @@ const App = () => {
         algorithm: theme.darkAlgorithm,
       }}
     >
-      <div className="bg-zinc-800 text-white min-h-dvh">
-        <Router />
-      </div>
+      <AntdApp>
+        <div className="bg-zinc-800 text-white min-h-dvh">
+          <Router />
+        </div>
+      </AntdApp>
     </ConfigProvider>
   );
 };

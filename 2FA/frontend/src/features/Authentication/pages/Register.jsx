@@ -1,34 +1,32 @@
 import { LockOutlined, UserOutlined, } from '@ant-design/icons';
-import { Button, Form, Input, notification } from 'antd';
+import { App, Button, Form, Input } from 'antd';
 import { registerUser } from '../api/auth.api';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const Register = () => {
-    const [api , contextHolder] = notification.useNotification();
+    const { notification } = App.useApp();
     const navigate = useNavigate()
-    const [loading , setLoading] = useState(false)
+    const [loading, setLoading] = useState(false)
 
     const onFinish = async (values) => {
         setLoading(true)
         try {
             await registerUser(values)
-            api.success({title : "User created successfully"})
+            notification.success({ title: "User created successfully" })
             navigate("/login")
         } catch (error) {
-            console.log("ff",error.response.data.message);
-            api.error({
-                    title: 'Something went wrong',
-                    description : error?.response?.data?.message
+            notification.error({
+                title: 'Something went wrong',
+                description: error?.response?.data?.message
             });
-        } finally{
+        } finally {
             setLoading(false)
         }
     };
     return (
         <div className='flex h-dvh justify-center items-center flex-col gap-6 '>
             <h2 className='text-3xl'>Register</h2>
-            {contextHolder}
             <Form
                 name="login"
                 initialValues={{ remember: true }}
