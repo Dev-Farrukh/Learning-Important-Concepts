@@ -108,7 +108,7 @@ export const getFile = async (req, res) => {
             size: file.size
         })
 
-        res.status(200).json({
+        res.status(201).json({
             message: " File uploaded successfully",
             file: req.file
         })

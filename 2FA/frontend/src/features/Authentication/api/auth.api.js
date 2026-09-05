@@ -25,7 +25,21 @@ export const loginUser = async (payload) => {
         return response.data
     } catch (error) {
         console.error(error.response.data);
-        throw error?.response?.data || "Sorry for the inconvinience"
+        throw error?.response?.data || "Can not catch error"
     }
+}
 
+export const uploadFile = async (file) => {
+    console.log("df",file);
+    const formData = new FormData()
+    formData.append("file" , file)
+    
+    try {
+        const response = await axiosClient.post("/auth/file" , formData)
+        return response.data
+    } catch (error) {
+        console.error(error.response.data);
+        throw error?.response?.data || error || "Can not catch error"
+    }
+    
 }
