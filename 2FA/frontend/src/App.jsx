@@ -1,19 +1,17 @@
-import { ConfigProvider, theme , App as AntdApp } from "antd";
+import { ConfigProvider, theme, App as AntdApp } from "antd";
 import Router from "./Router";
 
 const App = () => {
   return (
-    <ConfigProvider
-      theme={{
-        algorithm: theme.darkAlgorithm,
-      }}
-    >
-      <AntdApp>
-        <div className="bg-zinc-800 text-white min-h-dvh">
+      <ConfigProvider
+        theme={{
+          algorithm: theme.darkAlgorithm
+        }}
+      >
+        <AntdApp>
           <Router />
-        </div>
-      </AntdApp>
-    </ConfigProvider>
+        </AntdApp>
+      </ConfigProvider>
   );
 };
 

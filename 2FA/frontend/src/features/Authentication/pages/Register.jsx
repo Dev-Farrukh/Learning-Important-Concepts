@@ -2,7 +2,7 @@ import { LockOutlined, UserOutlined, } from '@ant-design/icons';
 import { App, Button, Form, Input } from 'antd';
 import { registerUser } from '../api/auth.api';
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const Register = () => {
     const { notification } = App.useApp();
@@ -62,8 +62,8 @@ const Register = () => {
                     <Button block type="primary" htmlType="submit" style={{ marginBottom: "10px" }} loading={loading}>
                         Register
                     </Button>
-                    <div className="text-center text-sm text-zinc-400">
-                        or <a href="" className="text-blue-400 hover:text-blue-300 transition-colors">Login now!</a>
+                    <div className="text-center text-sm text-zinc-400 mt-3">
+                        or <Link to="/login" className="text-blue-400 hover:text-blue-300 transition-colors">Login now!</Link>
                     </div>
                 </Form.Item>
             </Form>
