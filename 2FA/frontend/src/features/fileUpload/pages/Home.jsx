@@ -4,6 +4,8 @@ const Home = () => {
   const fileRef = useRef()
   const [file, setFile] = useState(null)
   const [isDragging, setIsDragging] = useState(false)
+  console.log(file);
+  
 
   const handleChoosee = () => fileRef.current.click()
 
@@ -27,7 +29,7 @@ const Home = () => {
   }
   return (
     <div className="h-screen flex items-center justify-center flex-col gap-4">
-      <h2 className="text-center text-4xl" >Handling Files  </h2>
+      <h2 className="text-center text-4xl" >Handling Files</h2>
 
       <input type="file" name="fileInput" ref={fileRef} className="hidden" onChange={inputHandler} />
 

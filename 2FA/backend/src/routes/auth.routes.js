@@ -1,24 +1,27 @@
 import express from "express";
 import * as authController from "../controller/auth.controller.js";
-import {body} from "express-validator";
+import { body } from "express-validator";
 import tokenValid from "../middleware/tokenCheck.js";
+import uploadFile from "../middleware/fileUpload.js";
 const router = express.Router();
 
-router.post("/register",[
-    body("firstName").trim().notEmpty().isLength({min : 2 , max : 10}).withMessage("First name is invalid"),
-    body("lastName").trim().notEmpty().isLength({min : 2 , max : 10}).withMessage("Last name is invalid"),
-    body("userName").trim().notEmpty().isLength({min : 3 , max : 10}).withMessage("User name is invalid"),
+router.post("/register", [
+    body("firstName").trim().notEmpty().isLength({ min: 2, max: 10 }).withMessage("First name is invalid"),
+    body("lastName").trim().notEmpty().isLength({ min: 2, max: 10 }).withMessage("Last name is invalid"),
+    body("userName").trim().notEmpty().isLength({ min: 3, max: 10 }).withMessage("User name is invalid"),
     body("password").trim().notEmpty().withMessage("Password is invalid"),
-] , authController.registerUser)
+], authController.registerUser)
 
-router.post("/login",[
-    body("userName").trim().notEmpty().isLength({min : 3 , max : 10}).withMessage("User name is invalid"),
+router.post("/login", [
+    body("userName").trim().notEmpty().isLength({ min: 3, max: 10 }).withMessage("User name is invalid"),
     body("password").trim().notEmpty().withMessage("Password is invalid"),
-] , authController.loginUser)
+], authController.loginUser)
 
-router.get("/logout" , tokenValid , authController.logout)
+router.get("/logout", tokenValid, authController.logout)
 
-router.get("/get-user" , tokenValid , authController.getMe)
+router.get("/get-user", tokenValid, authController.getMe)
+
+router.post("/file", uploadFile.single("file"), authController.getFile)
 
 
 export default router
