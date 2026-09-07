@@ -21,10 +21,10 @@ const Login = () => {
 
             navigate("/")
         } catch (error) {
-            const errorMsg = typeof error === 'string' ? error : error?.response?.data?.message || error?.message || 'Try agin later';
             notification.error({
                 title: 'Something went wrong',
-                description: errorMsg
+                description: error?.response?.data?.message || error?.message
+
             });
         } finally {
             setLoading(false)
@@ -61,7 +61,7 @@ const Login = () => {
                 </Form.Item>
 
                 <Form.Item>
-                    <Button block type="primary" htmlType="submit" loading={loading}>
+                    <Button block type="primary" htmlType="submit" loading={loading} style={{ marginBottom: "10px" }}>
                         Button
                     </Button>
                     <div className="mt-3 text-center text-sm text-zinc-400">

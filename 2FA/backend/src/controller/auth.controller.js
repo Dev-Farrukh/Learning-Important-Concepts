@@ -1,6 +1,8 @@
 import { validationResult } from "express-validator";
 import userModel from "../model/user.schema.js";
 import fileModel from "../model/file.schema.js";
+import jwt from "jsonwebtoken"
+import envVariables from "../config/env.config.js";
 
 export const registerUser = async (req, res) => {
     const error = validationResult(req);
@@ -26,11 +28,13 @@ export const registerUser = async (req, res) => {
         return res.status(500).json({ message: "Internal server error" })
     }
 
-    const authToken = newUser.generateAuthToken();
-    res.cookie("token", authToken, {
+    const authToken = newUser.generateAccessToken();
+    const refreshToken = newUser.generateRefreshToken();
+    res.cookie("token", refreshToken, {
         httpOnly: true,
-        secure: true,
-        sameSite: 'none'
+        secure: false,
+        sameSite: 'lax',
+        maxAge: 7 * 24 * 60 * 60 * 1000
     });
 
     const userResponse = newUser.toObject();
@@ -55,11 +59,12 @@ export const loginUser = async (req, res) => {
     const isPassword = await user.comparePassword(password)
     if (!isPassword) return res.status(404).json({ message: "Invalid email or password" })
 
-    const authToken = user.generateAuthToken();
-    res.cookie("token", authToken, {
+    const authToken = user.generateAccessToken();
+    const refreshToken = user.generateRefreshToken()
+    res.cookie("token", refreshToken, {
         httpOnly: true,
-        secure: true,
-        sameSite: 'none'
+        secure: false,
+        sameSite: 'lax'
     });
 
     const userResponse = user.toObject();
@@ -95,9 +100,7 @@ export const getMe = async (req, res) => {
 
 export const getFile = async (req, res) => {
     try {
-        if (!req.file) {
-            return res.status(400).json({ message: "No file uploaded" });
-        }
+        if (!req.file) return res.status(400).json({ message: "No file uploaded" });
         const file = req.file
         console.log(file);
 
@@ -117,4 +120,16 @@ export const getFile = async (req, res) => {
             error : error.message
         })
     }
+}
+
+export const blacklistToken = async (req , res) => {
+    const token = req.headers.authorization?.split(" ")[1] || req.cookies.token
+    if (!token) return res.status(404).json({ message: "Token not found" });
+    const decoded = jwt.verify(token , envVariables.REFRESH_TOKEN_SECRET)
+    if (!decoded) return res.status(400).json({ message: "Inavlid Token " });
+
+    const accessToken = jwt.sign({id : decoded._id,} , envVariables.TOKEN_SECRET , {expiresIn : "15m"})
+    res.status(201).json({accessToken})
+
+
 }

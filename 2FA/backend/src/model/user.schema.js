@@ -22,6 +22,10 @@ const userSchema = new mongoose.Schema({
         required : true,
         select: false
     },
+    refreshToken : {
+        type : String ,
+        unique : true,
+    },
     role : {
         type : String ,
         enum : ["admin" , "user"],
@@ -29,8 +33,12 @@ const userSchema = new mongoose.Schema({
     }
 })
 
-userSchema.methods.generateAuthToken = function () {
-    return jwt.sign({id : this._id,} , envVariables.TOKEN_SECRET , {expiresIn : "48h"})
+userSchema.methods.generateAccessToken = function () {
+    return jwt.sign({id : this._id,} , envVariables.TOKEN_SECRET , {expiresIn : "1s"})
+}
+userSchema.methods.generateRefreshToken = function () {
+    return jwt.sign({id : this._id,} , envVariables.REFRESH_TOKEN_SECRET , {expiresIn : "7d"})
+
 }
 userSchema.methods.comparePassword = function (password) {
     return bcrypt.compare(password , this.password)

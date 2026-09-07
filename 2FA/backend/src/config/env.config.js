@@ -1,7 +1,7 @@
 /* eslint-disable no-undef */
 import "dotenv/config"
 
-const NAMES = ["PORT" , "MONGO_URI" , "TOKEN_SECRET" , "FORNTEND_URL"]
+const NAMES = ["PORT" , "MONGO_URI" , "TOKEN_SECRET" , "FORNTEND_URL" , "REFRESH_TOKEN_SECRET"]
 
 NAMES.forEach((items)=> {
     if(!process.env[items]){

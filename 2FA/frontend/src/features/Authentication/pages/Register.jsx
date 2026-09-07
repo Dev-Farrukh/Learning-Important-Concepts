@@ -16,9 +16,11 @@ const Register = () => {
             notification.success({ title: "User created successfully" })
             navigate("/login")
         } catch (error) {
+            console.log( "ff",error);
+            
             notification.error({
                 title: 'Something went wrong',
-                description: error?.response?.data?.message
+                description: error?.response?.data?.message || error?.message
             });
         } finally {
             setLoading(false)

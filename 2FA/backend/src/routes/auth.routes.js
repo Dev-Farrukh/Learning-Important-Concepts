@@ -23,5 +23,7 @@ router.get("/get-user", tokenValid, authController.getMe)
 
 router.post("/file", uploadFile.single("file"), authController.getFile)
 
+router.post("/refresh" , authController.blacklistToken)
+
 
 export default router
