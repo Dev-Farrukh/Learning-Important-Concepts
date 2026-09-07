@@ -7,8 +7,6 @@ const Home = () => {
   const [file, setFile] = useState(null)
   const [isDragging, setIsDragging] = useState(false)
   const { notification } = App.useApp()
-  console.log(file);
-
 
   const handleUpload = async () => {
     try {

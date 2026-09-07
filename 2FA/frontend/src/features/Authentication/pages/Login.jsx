@@ -1,11 +1,13 @@
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { App, Button, Checkbox, Flex, Form, Input } from 'antd';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { loginUser } from '../api/auth.api';
+import { userContext } from '../Context.user';
 const Login = () => {
-      const { notification } = App.useApp();
+    const { notification } = App.useApp();
     const navigate = useNavigate()
+    const { user, setUser } = useContext(userContext)
     const [loading, setLoading] = useState(false)
 
     const onFinish = async values => {
@@ -13,7 +15,10 @@ const Login = () => {
         setLoading(true)
         try {
             const response = await loginUser(values)
-            notification.success({ title: `Hello ${response?.user?.firstName || "user"}` }) 
+            notification.success({ title: `Hello ${response?.user?.firstName || "user"}` })
+            setUser(response?.user)
+            console.log(user);
+
             navigate("/")
         } catch (error) {
             const errorMsg = typeof error === 'string' ? error : error?.response?.data?.message || error?.message || 'Try agin later';
