@@ -43,3 +43,17 @@ export const uploadFile = async (file) => {
     }
     
 }
+
+export const getUser = async (token) => {
+    try {
+        const response = await axiosClient("/auth/get-user" , {
+            headers : {
+                Authorization : `Bearer ${token}`
+            }
+        })
+        return response.data
+    } catch (error) {
+        console.error(error);
+        throw error?.response?.data || error || "Can not catch error"
+    }
+}

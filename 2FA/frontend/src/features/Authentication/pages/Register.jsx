@@ -3,21 +3,25 @@ import { App, Button, Form, Input } from 'antd';
 import { registerUser } from '../api/auth.api';
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useContext } from 'react';
+import { userContext } from '../Context.user';
 
 const Register = () => {
     const { notification } = App.useApp();
     const navigate = useNavigate()
     const [loading, setLoading] = useState(false)
+    const { setUser } = useContext(userContext)
+    
 
     const onFinish = async (values) => {
         setLoading(true)
         try {
-            await registerUser(values)
+            const response = await registerUser(values)
             notification.success({ title: "User created successfully" })
-            navigate("/login")
+            localStorage.setItem("token" ,response?.authToken);
+            setUser(response?.user)
+            navigate("/")
         } catch (error) {
-            console.log( "ff",error);
-            
             notification.error({
                 title: 'Something went wrong',
                 description: error?.response?.data?.message || error?.message

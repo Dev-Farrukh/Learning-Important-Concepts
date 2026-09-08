@@ -7,18 +7,16 @@ import { userContext } from '../Context.user';
 const Login = () => {
     const { notification } = App.useApp();
     const navigate = useNavigate()
-    const { user, setUser } = useContext(userContext)
+    const { setUser } = useContext(userContext)
     const [loading, setLoading] = useState(false)
 
     const onFinish = async values => {
-        console.log('Received values of form: ', values);
         setLoading(true)
         try {
             const response = await loginUser(values)
-            notification.success({ title: `Hello ${response?.user?.firstName || "user"}` })
+            notification.success({ title: `Hello ${response?.user?.firstName || "User"}` })
+            localStorage.setItem("token" , response?.authToken);
             setUser(response?.user)
-            console.log(user);
-
             navigate("/")
         } catch (error) {
             notification.error({
@@ -62,7 +60,7 @@ const Login = () => {
 
                 <Form.Item>
                     <Button block type="primary" htmlType="submit" loading={loading} style={{ marginBottom: "10px" }}>
-                        Button
+                        Login
                     </Button>
                     <div className="mt-3 text-center text-sm text-zinc-400">
                         or <Link to="/register" className="text-blue-400 hover:text-blue-300 transition-colors">Register now!</Link>
