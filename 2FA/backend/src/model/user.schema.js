@@ -34,7 +34,7 @@ const userSchema = new mongoose.Schema({
 })
 
 userSchema.methods.generateAccessToken = function () {
-    return jwt.sign({id : this._id,} , envVariables.TOKEN_SECRET , {expiresIn : "1s"})
+    return jwt.sign({id : this._id,} , envVariables.TOKEN_SECRET , {expiresIn : "15m"})
 }
 userSchema.methods.generateRefreshToken = function () {
     return jwt.sign({id : this._id,} , envVariables.REFRESH_TOKEN_SECRET , {expiresIn : "7d"})

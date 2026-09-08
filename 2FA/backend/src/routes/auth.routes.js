@@ -17,13 +17,13 @@ router.post("/login", [
     body("password").trim().notEmpty().withMessage("Password is invalid"),
 ], authController.loginUser)
 
-router.get("/logout", tokenValid, authController.logout)
+router.get("/logout", authController.logout)
 
 router.get("/get-user", tokenValid, authController.getMe)
 
-router.post("/file", uploadFile.single("file"), authController.getFile)
+router.post("/file", tokenValid , uploadFile.single("file"), authController.getFile)
 
-router.post("/refresh" , authController.blacklistToken)
+router.post("/refresh" , authController.refreshToken)
 
 
 export default router

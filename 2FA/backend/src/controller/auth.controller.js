@@ -3,6 +3,7 @@ import userModel from "../model/user.schema.js";
 import fileModel from "../model/file.schema.js";
 import jwt from "jsonwebtoken"
 import envVariables from "../config/env.config.js";
+import blackListTokenModel from "../model/token.schema.js";
 
 export const registerUser = async (req, res) => {
     const error = validationResult(req);
@@ -64,7 +65,8 @@ export const loginUser = async (req, res) => {
     res.cookie("token", refreshToken, {
         httpOnly: true,
         secure: false,
-        sameSite: 'lax'
+        sameSite: 'lax',
+        maxAge: 7 * 24 * 60 * 60 * 1000
     });
 
     const userResponse = user.toObject();
@@ -79,10 +81,28 @@ export const loginUser = async (req, res) => {
 }
 
 export const logout = async (req, res) => {
+    const token = req.headers.authorization?.split(" ")[1] || req.cookies.token
+    if (!token) return res.status(404).json({ message: "Token not found" });
+    const isBlacklisted = await blackListTokenModel.findOne({ token })
+    if (isBlacklisted) return res.status(400).json({ message: "Inavlid Token " });
+    const decoded = jwt.verify(token, envVariables.REFRESH_TOKEN_SECRET)
+    if (!decoded) return res.status(400).json({ message: "Inavlid Token " });
+
+    // Blckilsting old one
+    try {
+        await blackListTokenModel.create({
+            token,
+            expiresAt: Date.now(),
+            reason: "logout",
+        })
+    } catch (error) {
+        res.clearCookie("token")
+        return res.status(500).json({ error })
+    }
     res.clearCookie("token", {
         httpOnly: true,
-        secure: true,
-        sameSite: "none",
+        secure: false,
+        sameSite: "lax",
     })
     return res.status(200).json({ message: "Logged out successfully" });
 }
@@ -117,19 +137,44 @@ export const getFile = async (req, res) => {
         })
     } catch (error) {
         res.status(500).json({
-            error : error.message
+            error: error.message
         })
     }
 }
 
-export const blacklistToken = async (req , res) => {
+export const refreshToken = async (req, res) => {
+    // Checks
     const token = req.headers.authorization?.split(" ")[1] || req.cookies.token
     if (!token) return res.status(404).json({ message: "Token not found" });
-    const decoded = jwt.verify(token , envVariables.REFRESH_TOKEN_SECRET)
-    if (!decoded) return res.status(400).json({ message: "Inavlid Token " });
+    const isBlacklisted = await blackListTokenModel.findOne({ token })
+    if (isBlacklisted) return res.status(400).json({ message: "Inavlid Token " });
+    try {
+        const decoded = jwt.verify(token, envVariables.REFRESH_TOKEN_SECRET)
+        // Genrating new one
+        const refreshToken = jwt.sign({ id: decoded.id, }, envVariables.REFRESH_TOKEN_SECRET, { expiresIn: "7d" })
+        res.cookie("token", refreshToken, {
+            httpOnly: true,
+            secure: false,
+            sameSite: 'lax',
+            maxAge: 7 * 24 * 60 * 60 * 1000
+        })
+        const accessToken = jwt.sign({ id: decoded.id, }, envVariables.TOKEN_SECRET, { expiresIn: "15m" })
+        // Blckilsting old one
+        try {
+            await blackListTokenModel.create({
+                token,
+                expiresAt: Date.now(decoded.exp *1000),
+                reason: "refresh",
+            }
+            )
+        } catch (error) {
+            return res.status(500).json({ error })
+        }
 
-    const accessToken = jwt.sign({id : decoded._id,} , envVariables.TOKEN_SECRET , {expiresIn : "15m"})
-    res.status(201).json({accessToken})
 
+        res.status(201).json({ accessToken })
 
+    } catch (error) {
+        return res.status(400).json({ message: "Inavlid Token ", error })
+    }
 }
