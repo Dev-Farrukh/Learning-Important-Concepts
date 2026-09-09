@@ -88,7 +88,6 @@ export const logout = async (req, res) => {
     const decoded = jwt.verify(token, envVariables.REFRESH_TOKEN_SECRET)
     if (!decoded) return res.status(400).json({ message: "Inavlid Token " });
 
-    // Blckilsting old one
     try {
         await blackListTokenModel.create({
             token,
@@ -163,7 +162,7 @@ export const refreshToken = async (req, res) => {
         try {
             await blackListTokenModel.create({
                 token,
-                expiresAt: Date.now(decoded.exp *1000),
+                expiresAt: Date.now(decoded.exp * 1000),
                 reason: "refresh",
             }
             )

@@ -28,7 +28,9 @@ const Protected = ({ children }) => {
                 setUser(userData.user)
                 console.log(userData);
             } catch {
-                return notification.error("Something went wrong")
+                localStorage.removeItem("token")
+                setUser(null)
+                notification.error({ title: "Session expired", description: "Please log in again" })
             } finally {
                 setLoading(false)
             }

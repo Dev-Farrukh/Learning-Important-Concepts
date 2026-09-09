@@ -30,25 +30,39 @@ export const loginUser = async (payload) => {
 }
 
 export const uploadFile = async (file) => {
-    console.log("df",file);
+    console.log("df", file);
     const formData = new FormData()
-    formData.append("file" , file)
-    
+    formData.append("file", file)
+
     try {
-        const response = await axiosClient.post("/auth/file" , formData)
+        const response = await axiosClient.post("/auth/file", formData)
         return response.data
     } catch (error) {
         console.error(error.response.data);
         throw error?.response?.data || error || "Can not catch error"
     }
-    
+
 }
 
 export const getUser = async (token) => {
     try {
-        const response = await axiosClient("/auth/get-user" , {
-            headers : {
-                Authorization : `Bearer ${token}`
+        const response = await axiosClient("/auth/get-user", {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+        return response.data
+    } catch (error) {
+        console.error(error);
+        throw error?.response?.data || error || "Can not catch error"
+    }
+}
+
+export const logoutUser = async (token) => {
+    try {
+        const response = await axiosClient.get("/auth/logout", {
+            headers: {
+                Authorization: `Bearer ${token}`
             }
         })
         return response.data
