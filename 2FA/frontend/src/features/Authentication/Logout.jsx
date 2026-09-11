@@ -5,6 +5,7 @@ import { App, Spin } from 'antd'
 const Logout = () => {
     const { notification } = App.useApp()
     let navigate = useNavigate()
+    // Logout effect 
     useEffect(() => {
         const logout = async () => {
             const token = localStorage.getItem("token")
